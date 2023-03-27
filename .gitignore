@@ -66,3 +66,6 @@ crashlytics-build.properties
 
 # Git Merge artifacts
 *.orig
+
+# Scripts not want public
+/Assets/NotPublic/
