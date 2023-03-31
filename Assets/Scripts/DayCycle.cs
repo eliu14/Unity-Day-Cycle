@@ -5,13 +5,15 @@ using UnityEngine;
 using TMPro;
 public class DayCycle : MonoBehaviour
 {
+    // Speed factor by which time passes
     public float timeMultiplier;
+    // The hour of the day to start the 
     public float startHour;
-
+    // The text to display the time
     public TextMeshProUGUI timeText;
 
-    public Light sunLight;
-    public Light moonLight;
+    public Light sunlight;
+    public Light moonlight;
     public float sunriseHour;
     public float sunsetHour;
 
@@ -20,8 +22,8 @@ public class DayCycle : MonoBehaviour
 
     public AnimationCurve lightChangeCurve;
 
-    public float maxSunLightIntensity;
-    public float maxMoonLightIntensity;
+    public float maxSunlightIntensity;
+    public float maxMoonlightIntensity;
     
     public DateTime currentTime;
 
@@ -45,6 +47,12 @@ public class DayCycle : MonoBehaviour
         UpdateLightSettings();
     }
 
+    public void UpdateTimeToGivenTime(float givenTime)
+    {
+        TimeSpan newTime = TimeSpan.FromHours(givenTime);
+
+        currentTime = DateTime.Now.Date + newTime;
+    }
     private void UpdateTimeOfDay()
     {
         currentTime = currentTime.AddSeconds(Time.deltaTime * timeMultiplier);
@@ -82,14 +90,14 @@ public class DayCycle : MonoBehaviour
 
         }
 
-        sunLight.transform.rotation = Quaternion.AngleAxis(sunLightRotation, Vector3.right);
+        sunlight.transform.rotation = Quaternion.AngleAxis(sunLightRotation, Vector3.right);
     }
 
     private void UpdateLightSettings()
     {
-        float dotProduct = Vector3.Dot(sunLight.transform.forward, Vector3.down);
-        sunLight.intensity = Mathf.Lerp(0, maxSunLightIntensity, lightChangeCurve.Evaluate(dotProduct));
-        moonLight.intensity = Mathf.Lerp(maxMoonLightIntensity, 0, lightChangeCurve.Evaluate(dotProduct));
+        float dotProduct = Vector3.Dot(sunlight.transform.forward, Vector3.down);
+        sunlight.intensity = Mathf.Lerp(0, maxSunlightIntensity, lightChangeCurve.Evaluate(dotProduct));
+        moonlight.intensity = Mathf.Lerp(maxMoonlightIntensity, 0, lightChangeCurve.Evaluate(dotProduct));
         RenderSettings.ambientLight = Color.Lerp(nightAmbientLight, dayAmbientLight, lightChangeCurve.Evaluate(dotProduct));
     }
 

@@ -11,16 +11,22 @@ public class Menu : MonoBehaviour
     private RadialFill clockColor;
 
     [SerializeField] TextMeshProUGUI timeText;
+
+    private DayCycle timeController;
     // Start is called before the first frame update
     void Start()
     {
         clockColor.OnValueChange += OnTimeChange;
+        if (!timeController)
+        {
+            timeController = GameObject.FindObjectOfType<DayCycle>();
+        }
     }
 
     private void OnTimeChange(float ratio)
     {
-
-        //timeText.text;
+        float newTime = ratio * 24;
+        timeController.UpdateTimeToGivenTime(newTime);
     }
     // Update is called once per frame
     void Update()

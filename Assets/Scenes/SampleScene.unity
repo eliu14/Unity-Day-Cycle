@@ -189,7 +189,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &705507993
 GameObject:
@@ -465,7 +465,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1537387146 stripped
 MonoBehaviour:
@@ -573,7 +573,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1794094007
 GameObject:
@@ -667,7 +667,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1 &1875110946
 GameObject:
@@ -701,8 +701,8 @@ MonoBehaviour:
   timeMultiplier: 2000
   startHour: 6
   timeText: {fileID: 1537387146}
-  sunLight: {fileID: 705507994}
-  moonLight: {fileID: 1794094008}
+  sunlight: {fileID: 705507994}
+  moonlight: {fileID: 1794094008}
   sunriseHour: 6
   sunsetHour: 19.5
   dayAmbientLight: {r: 0.56078434, g: 0.6039216, b: 0.68235296, a: 0}
@@ -740,8 +740,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  maxSunLightIntensity: 1
-  maxMoonLightIntensity: 0.5
+  maxSunlightIntensity: 0
+  maxMoonlightIntensity: 0
 --- !u!4 &1875110948
 Transform:
   m_ObjectHideFlags: 0
@@ -755,7 +755,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &597516074333038178
 PrefabInstance:
@@ -768,6 +768,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI Canvas
       objectReference: {fileID: 0}
+    - target: {fileID: 597516074045107268, guid: a4a6edf0c8267784b8a43a2706314406, type: 3}
+      propertyPath: m_AdditionalShaderChannelsFlag
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 597516074045107269, guid: a4a6edf0c8267784b8a43a2706314406, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -778,7 +782,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 597516074045107269, guid: a4a6edf0c8267784b8a43a2706314406, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 597516074045107269, guid: a4a6edf0c8267784b8a43a2706314406, type: 3}
       propertyPath: m_AnchorMax.x
