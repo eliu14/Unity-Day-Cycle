@@ -8,15 +8,15 @@ using TMPro;
 public class Menu : MonoBehaviour
 {
     [SerializeField]
-    private RadialFill clockColor;
+    private RadialFill clockRadialControl;
 
     [SerializeField] TextMeshProUGUI timeText;
 
     private DayCycle timeController;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        clockColor.OnValueChange += OnTimeChange;
+        clockRadialControl.OnValueChange += OnTimeChange;
         if (!timeController)
         {
             timeController = GameObject.FindObjectOfType<DayCycle>();
