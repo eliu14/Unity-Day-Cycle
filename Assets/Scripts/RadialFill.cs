@@ -18,58 +18,13 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     // Start is called before the first frame update
     void Start()
     {
-        //clockhandRotate.OnAngleChanged += ClockHandSetRatio;
+        clockhandRotate.OnAngleChanged += ClockHandSetRatio;
     }
 
-    public void ClockHandSetRatio(Quaternion startRotation, Quaternion rotation)
+    public void ClockHandSetRatio(float rotation)
     {
-        float endAngle = 0f;
-        float startAngle = 0f;
+        float endRatio = (rotation / 360f);
 
-        Vector3 endAxis;
-        Vector3 startAxis;
-
-        rotation.ToAngleAxis(out endAngle, out endAxis);
-        startRotation.ToAngleAxis(out startAngle, out startAxis);
-
-        Debug.Log($"Start Axis: {startAxis}\nStart angle: {startAngle}");
-        Debug.Log($"End Axis: {endAxis}\nEnd angle: {endAngle}");
-
-        if (endAxis.z > 0) endAngle = -endAngle + 360f;
-        float endRatio = (endAngle / 360f);
-
-        float currentOuterFilled = colorOuterRingImage.fillAmount;
-        float currentInnerFilled = colorInnerRingImage.fillAmount;
-        if (currentOuterFilled > .75f && currentInnerFilled == 0f)
-        {
-            Debug.Log("Check 1 triggered");
-            if (endRatio < 0.25f)
-            {
-                endRatio = endRatio + 1f;
-                Debug.Log($"New Ratio: {endRatio}");
-            }
-        }
-        if (currentOuterFilled == 1f && currentInnerFilled > 0f)
-        {
-            if (lastRatio >= 1.125f)
-            {
-                endRatio = endRatio + 1f;
-                if (currentInnerFilled > 0.75f && endRatio < 0.25f && endRatio > 0f)
-                {
-                    endRatio = 2f;
-                    Debug.Log($"New Ratio: {endRatio}");
-                }
-            }
-            if (lastRatio < 1.125f)
-            {
-                if (endRatio < 0.825f)
-                {
-                    endRatio = endRatio + 1f;
-                }
-            }
-
-        }
-        Debug.Log($"Set Ratio: {endRatio}");
         SetRatio(endRatio);
     }
     public void SetRatio(float ratio, float duration = 0f)
@@ -125,30 +80,30 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 
     public void OnDrag(PointerEventData eventData)
     {
-        Vector2 pos = default(Vector2);
+        //Vector2 pos = default(Vector2);
         
-        if(RectTransformUtility.ScreenPointToLocalPointInRectangle(colorOuterRingImage.rectTransform, eventData.position, eventData.pressEventCamera, out pos)) //&& RectTransformUtility.RectangleContainsScreenPoint(clockHand.rectTransform, eventData.position, eventData.pressEventCamera))
-        {
-            Debug.Log("On Drag Invoked in RadialFill");
-            // The position of the pointer is given in pos
-            // Get the position of the pivots
-            Vector2 ringPivot = colorOuterRingImage.rectTransform.pivot;
+        //if(RectTransformUtility.ScreenPointToLocalPointInRectangle(colorOuterRingImage.rectTransform, eventData.position, eventData.pressEventCamera, out pos)) //&& RectTransformUtility.RectangleContainsScreenPoint(clockHand.rectTransform, eventData.position, eventData.pressEventCamera))
+        //{
+        //    //Debug.Log("On Drag Invoked in RadialFill");
+        //    // The position of the pointer is given in pos
+        //    // Get the position of the pivots
+        //    Vector2 ringPivot = colorOuterRingImage.rectTransform.pivot;
 
-            // Calculate the vector from pivot to pointer
-            Vector2 vectFromRingPivotToPointer = new Vector2(pos.x - ringPivot.x, pos.y - ringPivot.y);
-            // Normalize the vector
-            Vector3 angle = new Vector3(vectFromRingPivotToPointer.x, vectFromRingPivotToPointer.y, 0).normalized;
+        //    // Calculate the vector from pivot to pointer
+        //    Vector2 vectFromRingPivotToPointer = new Vector2(pos.x - ringPivot.x, pos.y - ringPivot.y);
+        //    // Normalize the vector
+        //    Vector3 angle = new Vector3(vectFromRingPivotToPointer.x, vectFromRingPivotToPointer.y, 0).normalized;
 
-            // Assuming radial fill starts from down angle
-            // Get the quaternion rotation from radial fill start angle to desired angle
-            Quaternion r = Quaternion.FromToRotation(Vector3.up, angle);
+        //    // Assuming radial fill starts from down angle
+        //    // Get the quaternion rotation from radial fill start angle to desired angle
+        //    Quaternion r = Quaternion.FromToRotation(Vector3.up, angle);
 
-            // Calculate fill ratio
-            float ratio = (360f - (r.eulerAngles.z)) / 360;
+        //    // Calculate fill ratio
+        //    float ratio = (360f - (r.eulerAngles.z)) / 360;
             
-            SetRatio(ratio);
+        //    SetRatio(ratio);
             
-        }
+        //}
     }
 
     public void OnPointerDown(PointerEventData eventData)
@@ -166,4 +121,8 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
        
     }
 
+    private void OnDestroy()
+    {
+        clockhandRotate.OnAngleChanged -= ClockHandSetRatio;
+    }
 }
