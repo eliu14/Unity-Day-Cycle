@@ -39,12 +39,13 @@ public class DayCycle : MonoBehaviour
         sunsetTime = TimeSpan.FromHours(sunsetHour);
     }
 
+    
     // Update is called once per frame
     void Update()
     {
         UpdateTimeOfDay();
         RotateSun();
-        UpdateLightSettings();
+        UpdateLightSettings();   
     }
 
     public void UpdateTimeToGivenTime(float givenTime)
@@ -52,6 +53,9 @@ public class DayCycle : MonoBehaviour
         TimeSpan newTime = TimeSpan.FromHours(givenTime);
 
         currentTime = DateTime.Now.Date + newTime;
+        UpdateTimeOfDay();
+        RotateSun();
+        UpdateLightSettings();
     }
     private void UpdateTimeOfDay()
     {

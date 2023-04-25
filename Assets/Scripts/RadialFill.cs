@@ -31,7 +31,7 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     {
         lastRatio = ratio;
         StartCoroutine(UpdateCircleGraphics(ratio, duration));
-        OnValueChange.Invoke(ratio);
+        //OnValueChange.Invoke(ratio);
     }
     private IEnumerator UpdateCircleGraphics(float desiredRatio, float animationDuration)
     {
