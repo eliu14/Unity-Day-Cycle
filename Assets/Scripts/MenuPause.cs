@@ -22,6 +22,23 @@ public class MenuPause : MonoBehaviour
             }
         }
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown("escape") || Input.GetKeyDown("p"))
+        {
+            if (buttons != null)
+            {
+                if (applicationPaused)
+                {
+                    buttons[0].onClick.Invoke();
+                }
+                else
+                {
+                    buttons[1].onClick.Invoke();
+                }
+            }
+        }
+    }
     public void TogglePause()
     {
         Debug.Log("TogglePause: activated");
