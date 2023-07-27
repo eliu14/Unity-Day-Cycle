@@ -23,12 +23,25 @@ public class DragRotate : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     {
         rect = GetComponent<RectTransform>();
     }
-    private void convertAngle(Quaternion rotation)
+    public void rotateAttachedObjectByAngle(float newAngle)
     {
+        Quaternion quatFromEulerAngle = Quaternion.Euler(new Vector3(0, 0, -newAngle));
 
+        //float newRotationAngle, currentRotationAngle = 0f;
+        //Vector3 newRotationAxis, currentRotationAxis;
+
+        //transform.localRotation.ToAngleAxis(out currentRotationAngle, out currentRotationAxis);
+        //quatFromEulerAngle.ToAngleAxis(out newRotationAngle, out newRotationAxis);
+
+        //Debug.Log($"<color=#00FF00>Current Rotation Angle: {currentRotationAngle}</color>");
+        //Debug.Log($"<color=#42BBEB>New Rotation Angle: {newRotationAngle}</color>");
+
+        //Debug.Log($"<color=#00FF00>Current Rotation Axis: {currentRotationAxis}</color>");
+        //Debug.Log($"<color=#42BBEB>New Rotation Axis: {newRotationAxis}</color>");
+
+        transform.localRotation = quatFromEulerAngle;
+        currentAngle = 0f;
     }
-
-    // Rotates the attached object when the OnAngleChanged action is triggered
     private void rotateAttachedObject(Quaternion rotation)
     {
         float newRotationAngle, currentRotationAngle = 0f;

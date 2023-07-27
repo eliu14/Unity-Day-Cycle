@@ -14,6 +14,8 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     [SerializeField]
     private DragRotate clockhandRotate;
 
+    public Transform outerRing;
+    public Transform innerRing;
     float lastRatio;
     // Start is called before the first frame update
     void Start()
@@ -78,6 +80,11 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         
     }
 
+    public void rotateByAngle(float newAngle)
+    {
+        outerRing.localRotation = Quaternion.Euler(new Vector3(0, 0, -newAngle));
+        innerRing.localRotation = Quaternion.Euler(new Vector3(0, 0, -newAngle));
+    }
     public void OnDrag(PointerEventData eventData)
     {
         //Vector2 pos = default(Vector2);

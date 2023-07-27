@@ -1,12 +1,14 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class MenuPause : MonoBehaviour
 {
+    public event Action<bool> OnMenuToggled;
     static bool applicationPaused;
     [SerializeField]
     Button[] buttons;
+
     private void OnMouseUpAsButton()
     {
         
@@ -53,5 +55,9 @@ public class MenuPause : MonoBehaviour
             applicationPaused = true;
         }
         Debug.Log($"TogglePause: App Paused: {applicationPaused}");
+        if (OnMenuToggled != null)
+        {
+            OnMenuToggled(applicationPaused);
+        }
     }
 }
