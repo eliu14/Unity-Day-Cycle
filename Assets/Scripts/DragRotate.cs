@@ -6,17 +6,17 @@ public class DragRotate : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
 {
     // This event echoes the new local angle to which we have been dragged
     public event Action<float> OnAngleChanged;
-    public event Action<Quaternion> OnDraggingFinished;
+    public event Action<float> OnActualAngleChanged;
     Quaternion dragStartRotation;
     Quaternion dragStartInverseRotation;
 
     private RectTransform rect;
-    float currentAngle;
+    public float currentAngle;
 
+    private Quaternion currentOriginQuat;
     private void Awake()
     {
         currentAngle = 0f;
-        OnDraggingFinished += convertAngle;
     }
 
     private void Start()
@@ -27,159 +27,82 @@ public class DragRotate : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     {
         Quaternion quatFromEulerAngle = Quaternion.Euler(new Vector3(0, 0, -newAngle));
 
-        //float newRotationAngle, currentRotationAngle = 0f;
-        //Vector3 newRotationAxis, currentRotationAxis;
-
-        //transform.localRotation.ToAngleAxis(out currentRotationAngle, out currentRotationAxis);
-        //quatFromEulerAngle.ToAngleAxis(out newRotationAngle, out newRotationAxis);
-
-        //Debug.Log($"<color=#00FF00>Current Rotation Angle: {currentRotationAngle}</color>");
-        //Debug.Log($"<color=#42BBEB>New Rotation Angle: {newRotationAngle}</color>");
-
-        //Debug.Log($"<color=#00FF00>Current Rotation Axis: {currentRotationAxis}</color>");
-        //Debug.Log($"<color=#42BBEB>New Rotation Axis: {newRotationAxis}</color>");
-
         transform.localRotation = quatFromEulerAngle;
+        currentOriginQuat = quatFromEulerAngle;
         currentAngle = 0f;
     }
     private void rotateAttachedObject(Quaternion rotation)
     {
-        float newRotationAngle, currentRotationAngle = 0f;
-        Vector3 newRotationAxis, currentRotationAxis;
+        float newRotationAngle, localRotationAngle = 0f;
+        Vector3 newRotationAxis, localRotationAxis;
 
-        transform.localRotation.ToAngleAxis(out currentRotationAngle, out currentRotationAxis);
+        transform.localRotation.ToAngleAxis(out localRotationAngle, out localRotationAxis); // Current rotation
         rotation.ToAngleAxis(out newRotationAngle, out newRotationAxis);
-
-        //Debug.Log($"<color=#00FF00>Current Rotation Angle: {currentRotationAngle}</color>");
+        //Debug.Log($"Current Angle: {currentAngle}");
+        //Debug.Log($"<color=#00FF00>Local Rotation Angle: {localRotationAngle}</color>");
         //Debug.Log($"<color=#42BBEB>New Rotation Angle: {newRotationAngle}</color>");
 
-        //Debug.Log($"<color=#00FF00>Current Rotation Axis: {currentRotationAxis}</color>");
+        //Debug.Log($"<color=#00FF00>Local Rotation Axis: {localRotationAxis}</color>");
         //Debug.Log($"<color=#42BBEB>New Rotation Axis: {newRotationAxis}</color>");
 
-        var forwardA = transform.localRotation * Vector3.forward;
-        var forwardB = rotation * Vector3.forward;
-        //Debug.Log($"Current forward: <color=#00FF00>{forwardA} </color>");
-        //Debug.Log($"New forward: <color=#42BBEB>{forwardB} </color>");
+        var unsignedDiff = Quaternion.Angle(transform.localRotation, rotation);
+        //Debug.Log($"Unsigned diff: {unsignedDiff}");
 
-        var angleA = Mathf.Atan2(forwardA.y, forwardA.x) * Mathf.Rad2Deg;
-        var angleB = Mathf.Atan2(forwardB.y, forwardB.x) * Mathf.Rad2Deg;
+        var newAngle = newRotationAngle * newRotationAxis.z;
+        var localAngle = localRotationAngle * localRotationAxis.z;
+        if (newAngle > 0) 
+            newAngle = 360 - newAngle;
+        else 
+            newAngle = -newAngle;
+        if (localAngle > 0)
+            localAngle = 360 - localAngle;
+        else
+            localAngle = -localAngle;
 
-        var angleDiff = Mathf.DeltaAngle(angleB, angleA);
-        //Debug.Log($"Current Angle: <color=#00FF00>{angleA} </color>");
-        //Debug.Log($"New Angle: <color=#42BBEB>{angleB} </color>");
-        //Debug.Log($"DeltaAngle: <color=#EEEA9B>{angleDiff} </color>");
-        //Debug.Log($"Angle Manual diff: {angleB - angleA}");
-        
-        // The axis of the transform starts off as (1.00, 0, 0) usually
-        if (currentRotationAxis.z == 0)
+        var manualDiff = (newAngle - localAngle);
+        //Debug.Log($"Angle Manual diff: {manualDiff}");
+        var signedDiff = manualDiff >= 0 ? unsignedDiff : -unsignedDiff;
+        if (signedDiff > 0)
         {
-            if ((newRotationAngle * newRotationAxis.z) > 0)
+            if ((currentAngle + signedDiff) > 720)
             {
-                return;
-            }
-            transform.localRotation = rotation;
-            currentAngle = (newRotationAngle * newRotationAxis.z) < 0 ? -newRotationAngle : newRotationAngle;
-        }
-
-        // Clamp rotation to be between 0 and 720 degrees
-        if (currentAngle == 0)
-        {
-            if ((newRotationAngle * newRotationAxis.z) > 0)
-            {
-                return;
-            }
-        }
-
-        if (currentAngle == 720)
-        {
-            if ((newRotationAngle * newRotationAxis.z) < 0)
-            {
-                return;
-            }
-        }
-
-        if (angleDiff > 0)
-        {
-            if ((currentAngle + angleDiff) > 720)
-            {
-                if (currentAngle == 720)
+                if (currentAngle == 720f)
                     return;
 
-                Quaternion endClampAngle = Quaternion.LookRotation((transform.position + 10* Vector3.up) -transform.position, Vector3.forward);
-                Quaternion customRotation = endClampAngle * dragStartInverseRotation * dragStartRotation; // Combined rotation
-                transform.localRotation = customRotation;
+                transform.localRotation = currentOriginQuat;
                 currentAngle = 720f;
             }
             else
             {
                 transform.localRotation = rotation;
-                currentAngle += angleDiff;
+                currentAngle += signedDiff;
             }   
         }
 
-        else if (angleDiff < 0)
-        { 
-            if ((currentAngle + angleDiff) < 0)
+        else if (signedDiff < 0)
+        {
+            if ((currentAngle + signedDiff) < 0)
             {
-                if (currentAngle == 0)
+                if (currentAngle == 0f)
                     return;
-                
-                Quaternion begginningClampAngle = Quaternion.LookRotation((transform.position + 10 * Vector3.up) - transform.position, Vector3.forward);
-                Quaternion customRotation = begginningClampAngle * dragStartInverseRotation * dragStartRotation; // Combined rotation
-                transform.localRotation = customRotation;
+
+                transform.localRotation = currentOriginQuat;
                 currentAngle = 0f;
             }
             else
             {
                 transform.localRotation = rotation;
-                currentAngle += angleDiff;
+                currentAngle += signedDiff;
             }
         }
 
-        //Debug.Log($"Current angle: {currentAngle}");
-
-        // Correct currentAngle according to the actual angle of the transform
-        // 0-270 comes out to be an angle between 0 and 270 in the negative Z axis
-        // 270-360 comes out to be an angle between 0 and 90 in the positive Z axis
-        if (currentAngle != 0 && currentAngle != 720)
-        {
-            float actualAngle;
-            Vector3 actualAxis;
-            transform.localRotation.ToAngleAxis(out actualAngle, out actualAxis);
-
-            //Debug.Log($"<color=#FFFF00>Actual Rotation Axis: {actualAxis}</color>");
-            //Debug.Log($"<color=#FFFF00>Actual Rotation Angle: {actualAngle}</color>");
-
-            float effectiveActualAngle = actualAxis.z * actualAngle;
-            if (effectiveActualAngle < 0)
-            {
-                if (currentAngle > 360)
-                {
-                    currentAngle = (-effectiveActualAngle) + 360;
-
-                }
-                else
-                {
-                    currentAngle = (-effectiveActualAngle);
-                }
-            }
-            else if (effectiveActualAngle > 0)
-            {
-                if (currentAngle > 360)
-                {
-                    currentAngle = 720 - effectiveActualAngle;
-
-                }
-                else
-                {
-                    currentAngle = 360 - effectiveActualAngle;
-                }
-            }
-            //Debug.Log($"Current angle after correction: {currentAngle}");
-        }
         if (OnAngleChanged != null)
         {
             OnAngleChanged(currentAngle);
+        }
+        if (OnActualAngleChanged != null)
+        {
+            OnActualAngleChanged(newAngle);
         }
     }
     
@@ -212,10 +135,7 @@ public class DragRotate : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     {
         // Do nothing (but this has to exist or OnDrag won't work)
 
-        if (OnDraggingFinished != null)
-        {
-            //OnDraggingFinished();
-        }
+        
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -223,9 +143,32 @@ public class DragRotate : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
         Vector3 worldPoint;
         if (DragWorldPoint(eventData, out worldPoint) )//&& RectTransformUtility.RectangleContainsScreenPoint(rect, eventData.position, eventData.pressEventCamera))
         {
+            //Debug Stuff
+            float dragStartInverseAngle;
+            Vector3 dragStartInverseAxis;
+            dragStartInverseRotation.ToAngleAxis(out dragStartInverseAngle, out dragStartInverseAxis);
+            //Debug.Log($"<color=#6CBACB>Drag Start Inverse Angle: {dragStartInverseAngle}</color>");
+            //Debug.Log($"<color=#6CBACB>Drag Start Inverse Axis: {dragStartInverseAxis}</color>");
+
             Quaternion currentDragAngle = Quaternion.LookRotation(worldPoint - transform.position, Vector3.forward);
 
-            rotateAttachedObject(currentDragAngle * dragStartInverseRotation * dragStartRotation); // Combined rotation
+            //Debug Stuff
+            float currentDrag;
+            Vector3 currentDragAxis;
+            currentDragAngle.ToAngleAxis(out currentDrag, out currentDragAxis);
+            //Debug.Log($"<color=#6CBACB>Current Drag Angle: {currentDrag}</color>");
+            //Debug.Log($"<color=#6CBACB>Current Drag Axis: {currentDragAxis}</color>");
+
+            Quaternion newRotation = currentDragAngle * dragStartInverseRotation * dragStartRotation;
+
+            //Debug Stuff
+            float newAngle;
+            Vector3 newAxis;
+            newRotation.ToAngleAxis(out newAngle, out newAxis);
+            //Debug.Log($"<color=#6CBACB>New Rotation Angle: {newAngle}</color>");
+            //Debug.Log($"<color=#6CBACB>New Rotation Axis: {newAxis}</color>");
+
+            rotateAttachedObject(newRotation); // Combined rotation
             
         }
         else

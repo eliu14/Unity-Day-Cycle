@@ -38,7 +38,7 @@ public class Menu : MonoBehaviour
     void Awake()
     {
         //clockRadialControl.OnValueChange += OnTimeChange;
-        clockHandRotate.OnAngleChanged += OnRotationChange;
+        clockHandRotate.OnActualAngleChanged += OnRotationChange;
         if (!timeController)
         {
             timeController = GameObject.FindObjectOfType<DayCycle>();
@@ -91,6 +91,17 @@ public class Menu : MonoBehaviour
         //Debug.Log($"New Time Text: {newTimeText.text}");
     }
 
+    public void setNewTime()
+    {
+        if (newTime >= 0)
+        {
+            // -1 would mean no newTime has been set
+            timeController.UpdateTimeToGivenTime(newTime);
+            newTime = -1f;
+        }
+        SetClockHandRotation(true);
+        SetRadialFill(true);
+    }
     private void OnTimeChange(float ratio)
     {
         float newTime = ratio * 24;

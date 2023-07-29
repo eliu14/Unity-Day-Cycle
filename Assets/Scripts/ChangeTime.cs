@@ -15,13 +15,7 @@ public class ChangeTime : MonoBehaviour
 
     public void sendNewTimetoDayCycle()
     {
-        float newTime = menu.newTime;
-        if (newTime >= 0)
-        {
-            // -1 would mean no newTime has been set
-            dayCycle.UpdateTimeToGivenTime(menu.newTime);
-            menu.newTime = -1f;
-        }
+        menu.setNewTime();
     }
     // Update is called once per frame
     void Update()
