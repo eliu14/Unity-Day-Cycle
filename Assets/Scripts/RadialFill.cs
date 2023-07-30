@@ -8,9 +8,8 @@ using UnityEngine.UI;
 public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerDownHandler
 {
     public Action<float> OnValueChange;
-
-    public Image colorOuterRingImage;
-    public Image colorInnerRingImage;
+    [SerializeField]
+    Image colorOuterRingMask, colorInnerRingMask, colorOuterRingImage, colorInnerRingImage;
     [SerializeField]
     private DragRotate clockhandRotate;
 
@@ -37,8 +36,8 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     }
     private IEnumerator UpdateCircleGraphics(float desiredRatio, float animationDuration)
     {
-        float currentOuterRatio = colorOuterRingImage.fillAmount;
-        float currentInnerRatio = colorInnerRingImage.fillAmount;
+        float currentOuterRatio = colorOuterRingMask.fillAmount;
+        float currentInnerRatio = colorInnerRingMask.fillAmount;
         float outerRatio, innerRatio;
         if (desiredRatio > 1.0f)
         {
@@ -46,16 +45,16 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
             innerRatio = desiredRatio - 1.0f;
             for (float t = 0; t < animationDuration/2; t += Time.deltaTime)
             {
-                colorOuterRingImage.fillAmount = Mathf.Lerp(currentOuterRatio, outerRatio, t / animationDuration);
+                colorOuterRingMask.fillAmount = Mathf.Lerp(currentOuterRatio, outerRatio, t / animationDuration);
                 yield return null;
             }
             for (float t = 0; t < animationDuration/2; t += Time.deltaTime)
             {
-                colorInnerRingImage.fillAmount = Mathf.Lerp(currentInnerRatio, outerRatio, t / animationDuration);
+                colorInnerRingMask.fillAmount = Mathf.Lerp(currentInnerRatio, outerRatio, t / animationDuration);
                 yield return null;
             }
-            colorOuterRingImage.fillAmount = outerRatio;
-            colorInnerRingImage.fillAmount = innerRatio;
+            colorOuterRingMask.fillAmount = outerRatio;
+            colorInnerRingMask.fillAmount = innerRatio;
             
         }
         else
@@ -64,18 +63,18 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
             innerRatio = 0f;
             for (float t = 0; t < animationDuration/2; t += Time.deltaTime)
             {
-                colorInnerRingImage.fillAmount = Mathf.Lerp(currentInnerRatio, outerRatio, t / animationDuration);
+                colorInnerRingMask.fillAmount = Mathf.Lerp(currentInnerRatio, outerRatio, t / animationDuration);
                 yield return null;
             }
             for (float t = 0; t < animationDuration / 2; t += Time.deltaTime)
             {
-                colorOuterRingImage.fillAmount = Mathf.Lerp(currentOuterRatio, outerRatio, t / animationDuration);
+                colorOuterRingMask.fillAmount = Mathf.Lerp(currentOuterRatio, outerRatio, t / animationDuration);
                 yield return null;
             }
             
 
-            colorInnerRingImage.fillAmount = innerRatio;
-            colorOuterRingImage.fillAmount = outerRatio;
+            colorInnerRingMask.fillAmount = innerRatio;
+            colorOuterRingMask.fillAmount = outerRatio;
         }
         
     }
@@ -84,6 +83,8 @@ public class RadialFill : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDr
     {
         outerRing.localRotation = Quaternion.Euler(new Vector3(0, 0, -newAngle));
         innerRing.localRotation = Quaternion.Euler(new Vector3(0, 0, -newAngle));
+        colorOuterRingImage.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, newAngle));
+        colorInnerRingImage.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, newAngle));
     }
     public void OnDrag(PointerEventData eventData)
     {

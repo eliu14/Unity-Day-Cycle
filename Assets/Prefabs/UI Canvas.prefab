@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 597516073685840280}
   - component: {fileID: 4806205112352776572}
   m_Layer: 5
-  m_Name: OuterColorRing
+  m_Name: OuterRingMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: 597516073874871616}
   - component: {fileID: 2560129923287654}
   m_Layer: 5
-  m_Name: InnerColorRing
+  m_Name: InnerRingMask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1171,7 +1171,7 @@ GameObject:
   - component: {fileID: 9069868906911894599}
   - component: {fileID: 2360823009318376757}
   m_Layer: 5
-  m_Name: Image
+  m_Name: InnerRingImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2131,8 +2131,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ef6e400aeeaa3842bb4e670c0798948, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  colorOuterRingImage: {fileID: 597516073685840280}
-  colorInnerRingImage: {fileID: 597516073874871616}
+  colorOuterRingMask: {fileID: 597516073685840280}
+  colorInnerRingMask: {fileID: 597516073874871616}
+  colorOuterRingImage: {fileID: 4862997379641008616}
+  colorInnerRingImage: {fileID: 2360823009318376757}
   clockhandRotate: {fileID: 7207172196826408704}
   outerRing: {fileID: 597516073685840283}
   innerRing: {fileID: 597516073874871619}
@@ -2225,6 +2227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2b4b05cf751a7f4eaf76fe3c1515711, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentAngle: 0
 --- !u!1 &5724198606905754249
 GameObject:
   m_ObjectHideFlags: 0
@@ -3011,7 +3014,7 @@ GameObject:
   - component: {fileID: 6187069941350862888}
   - component: {fileID: 4862997379641008616}
   m_Layer: 5
-  m_Name: Image
+  m_Name: OuterRingImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
